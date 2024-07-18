@@ -1,0 +1,43 @@
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { CategoryEntity } from './category.entity';
+import { BaseEntity } from './base.entity';
+import { CommentEntity } from './comment.entity';
+
+@Entity()
+export class ProductEntity extends BaseEntity {
+  @Column({ type: 'varchar', nullable: false, unique: true })
+  name: string;
+
+  @Column({ type: 'text', nullable: false })
+  description: string;
+
+  @Column({ type: 'text', nullable: false })
+  image: string;
+
+  @Column({ type: 'text', nullable: false })
+  video: string;
+
+  @Column({ type: 'text', nullable: false })
+  color: string;
+
+  @Column({ type: 'text', name: 'old_price', nullable: false })
+  old_price: string;
+
+  @Column({ type: 'text', name: 'new_price', nullable: false })
+  new_price: string;
+
+  @Column({ type: 'int', default: 0 })
+  sold: number;
+
+  @Column({ type: 'int', default: 0 })
+  stock: number;
+
+  @Column({ type: 'int', name: 'category_id' })
+  categoryId: number;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  category: CategoryEntity;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.product)
+  comments: CommentEntity[];
+}
