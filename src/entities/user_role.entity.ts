@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { RoleEntity } from './role.entity';
+
 @Entity('user_role')
 export class UserRoleEntity {
   @PrimaryColumn({ type: 'int', name: 'user_id', nullable: false })
@@ -16,11 +18,11 @@ export class UserRoleEntity {
   @PrimaryColumn({ type: 'int', name: 'role_id', nullable: false })
   roleId: number;
 
-  @Column({ name: 'created_id' })
-  createdId: number;
+  @Column({ name: 'created_id', nullable: true })
+  createdId?: number;
 
-  @Column({ name: 'deleted_id' })
-  deletedId: number;
+  @Column({ name: 'deleted_id', nullable: true })
+  deletedId?: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -32,8 +34,10 @@ export class UserRoleEntity {
   deletedAt: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.userRoles)
+  @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
   @ManyToOne(() => RoleEntity, (role) => role.userRoles)
+  @JoinColumn({ name: 'role_id' })
   role: RoleEntity;
 }

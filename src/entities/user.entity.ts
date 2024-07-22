@@ -5,7 +5,7 @@ import { OrderEntity } from './order.entity';
 import { CommentEntity } from './comment.entity';
 import { ChatEntity } from './chat.entity';
 
-@Entity()
+@Entity('user')
 export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'user_name', nullable: false })
   userName: string;

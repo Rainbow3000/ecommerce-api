@@ -1,10 +1,10 @@
-import { ORDER_STATUS } from 'src/enums';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { ORDER_STATUS } from 'src/common/enums';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { UserEntity } from './user.entity';
 import { OrderDetailsEntity } from './order_details.entity';
 
-@Entity()
+@Entity('order')
 export class OrderEntity extends BaseEntity {
   @Column({ type: 'int', name: 'user_id', nullable: false })
   userId: number;
@@ -19,6 +19,7 @@ export class OrderEntity extends BaseEntity {
   orderStatus: ORDER_STATUS;
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
+  @JoinColumn({name:'user_id'})
   user: UserEntity;
 
   @OneToMany(() => OrderDetailsEntity, (orderDetaisl) => orderDetaisl.order)

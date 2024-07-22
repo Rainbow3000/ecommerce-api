@@ -1,8 +1,14 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { RoleModule } from './modules/role/role.module';
+import { AuthGuard } from './modules/auth/auth.guard';
+import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -23,8 +29,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
+    RoleModule,
+    UserModule,
+    JwtModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

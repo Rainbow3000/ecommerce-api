@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { BaseEntity } from './base.entity';
 
-@Entity()
+@Entity('category')
 export class CategoryEntity extends BaseEntity {
   @Column({ type: 'varchar', unique: true, nullable: false })
   name: string;

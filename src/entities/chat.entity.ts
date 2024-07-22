@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('chat')
 export class ChatEntity extends BaseEntity {
   @Column({ type: 'int', name: 'from_id', nullable: false })
   fromId: number;
@@ -17,6 +17,6 @@ export class ChatEntity extends BaseEntity {
   image: string;
 
   @ManyToOne(() => UserEntity, (user) => user.chats)
-  @JoinColumn({ name: 'fromId' })
+  @JoinColumn({ name: 'from_id' })
   user: UserEntity;
 }

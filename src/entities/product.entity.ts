@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 import { BaseEntity } from './base.entity';
 import { CommentEntity } from './comment.entity';
 
-@Entity()
+@Entity('product')
 export class ProductEntity extends BaseEntity {
   @Column({ type: 'varchar', nullable: false, unique: true })
   name: string;
@@ -36,6 +36,7 @@ export class ProductEntity extends BaseEntity {
   categoryId: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinColumn({name:'category_id'})
   category: CategoryEntity;
 
   @OneToMany(() => CommentEntity, (comment) => comment.product)
