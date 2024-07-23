@@ -69,7 +69,7 @@ export class AuthService {
       throw new UnauthorizedException(PASSWORD_INCORRECT);
     }
 
-    const subject = { sub: user.id, username: user.userName };
+    const subject = { userId: user.id, username: user.userName };
 
     const { password, ...restData } = user;
 
