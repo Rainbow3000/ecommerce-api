@@ -36,7 +36,7 @@ export class ProductEntity extends BaseEntity {
   categoryId: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
-  @JoinColumn({name:'category_id'})
+  @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
 
   @OneToMany(() => CommentEntity, (comment) => comment.product)

@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { USER_NOT_FOUND } from 'src/common/error';
-import { RoleEntity } from 'src/entities/role.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -23,6 +22,7 @@ export class UserService {
         userRoles: {
           role: true,
         },
+        userInfo: true,
       },
       select: {
         id: true,

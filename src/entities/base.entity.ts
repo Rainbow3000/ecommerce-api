@@ -34,10 +34,10 @@ export abstract class BaseEntity {
   status: COMMON_STATUS.ACTIVE;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({name:'created_id'})
+  @JoinColumn({ name: 'created_id' })
   createdBy: UserEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({name:'deleted_id'})
+  @JoinColumn({ name: 'deleted_id' })
   deletedBy: UserEntity;
 }

@@ -19,7 +19,7 @@ export class OrderEntity extends BaseEntity {
   orderStatus: ORDER_STATUS;
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
-  @JoinColumn({name:'user_id'})
+  @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
   @OneToMany(() => OrderDetailsEntity, (orderDetaisl) => orderDetaisl.order)

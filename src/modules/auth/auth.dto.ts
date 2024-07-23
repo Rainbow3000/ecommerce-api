@@ -11,7 +11,6 @@ export class CreateAuthDto {
   password: string;
 }
 
-
 export class LoginAuthDto {
   @IsEmail()
   email: string;

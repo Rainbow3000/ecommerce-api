@@ -1,9 +1,10 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { UserRoleEntity } from './user_role.entity';
 import { BaseEntity } from './base.entity';
 import { OrderEntity } from './order.entity';
 import { CommentEntity } from './comment.entity';
 import { ChatEntity } from './chat.entity';
+import { UserInfoEntity } from './user_info.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -16,6 +17,9 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', nullable: false })
   password: string;
 
+  @Column({ type: 'int', name: 'user_info_id', nullable: true })
+  userInfoId: number;
+
   @OneToMany(() => UserRoleEntity, (role) => role.user)
   userRoles: UserRoleEntity[];
 
@@ -27,4 +31,8 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => ChatEntity, (chat) => chat.user)
   chats: ChatEntity[];
+
+  @OneToOne(() => UserInfoEntity)
+  @JoinColumn({ name: 'user_info_id' })
+  userInfo: UserInfoEntity;
 }

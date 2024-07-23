@@ -11,7 +11,4 @@ export class UserInfoEntity extends BaseEntity {
 
   @Column({ type: 'text' })
   avatar: string;
-
-  @Column({ type: 'int', nullable: false })
-  userId: string;
 }

@@ -9,7 +9,6 @@ import { RoleModule } from './modules/role/role.module';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './modules/user/user.module';
-import { UserService } from './modules/user/user.service';
 
 @Module({
   imports: [
@@ -46,6 +45,6 @@ import { UserService } from './modules/user/user.service';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-  ]
+  ],
 })
 export class AppModule {}

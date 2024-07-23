@@ -15,10 +15,10 @@ export class OrderDetailsEntity extends BaseEntity {
   quantity: number;
 
   @ManyToOne(() => OrderEntity, (order) => order.orderDetails)
-  @JoinColumn({name:'order_id'})
+  @JoinColumn({ name: 'order_id' })
   order: OrderEntity;
 
   @ManyToOne(() => ProductEntity, (product) => product.id)
-  @JoinColumn({name:'product_id'})
+  @JoinColumn({ name: 'product_id' })
   product: ProductEntity;
 }
