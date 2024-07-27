@@ -1,0 +1,64 @@
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CategoryEntity } from 'src/entities/category.entity';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { CreateCategoryDto, GetListCategoryDto, UpdateCategoryDto } from './category.dto';
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
+import { CATEGORY_EXISTED, CATEGORY_NOT_FOUND } from 'src/common/error';
+
+@Injectable()
+export class CategoryService {
+  constructor(
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>) { }
+
+  async list({ limit, page, q }: GetListCategoryDto) {
+    const where: FindOptionsWhere<CategoryEntity> = {}
+
+    if (q) {
+      where.name = Like(`%${q}%`)
+    }
+
+    await this.categoryRepository.find({
+      skip: page || DEFAULT_PAGE * limit || DEFAULT_LIMIT,
+      take: limit || DEFAULT_LIMIT,
+      where
+    })
+  }
+
+  async create(payload: CreateCategoryDto) {
+    const category = await this.categoryRepository.findOneBy({ name: payload.name })
+
+    if (category) {
+      throw new BadRequestException(CATEGORY_EXISTED)
+    }
+
+    await this.categoryRepository.insert(payload)
+
+    return { message: 'success' }
+  }
+
+  async update(id: number, payload: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOneBy({ id })
+
+    if (!category) {
+      throw new NotFoundException(CATEGORY_NOT_FOUND)
+    }
+
+    await this.categoryRepository.update(id, payload)
+
+    return { message: 'success' }
+  }
+
+  async delete(id: number) {
+    const category = await this.categoryRepository.findOneBy({ id })
+
+    if (!category) {
+      throw new NotFoundException(CATEGORY_NOT_FOUND)
+    }
+
+    await this.categoryRepository.softDelete(id)
+
+    return { message: 'success' }
+  }
+}

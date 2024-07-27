@@ -21,3 +21,15 @@ export const ROLE_EXISTED = {
   statusCode: 400,
   message: 'Quyền người dùng đã tồn tại',
 };
+
+export const CATEGORY_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Danh mục không tồn tại',
+};
+
+export const CATEGORY_EXISTED = {
+  error: 'Duplicate',
+  statusCode: 400,
+  message: 'Danh mục đã tồn tại',
+};
