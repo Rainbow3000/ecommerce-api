@@ -33,3 +33,15 @@ export const CATEGORY_EXISTED = {
   statusCode: 400,
   message: 'Danh mục đã tồn tại',
 };
+
+export const PRODUCT_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Sản phẩm không tồn tại',
+};
+
+export const PRODUCT_DUPLICATE_NAME = {
+  error: 'Duplicate',
+  statusCode: 400,
+  message: 'Tên sản phẩm đã tồn tại',
+};

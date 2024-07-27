@@ -5,7 +5,6 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
 import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { GetUserListDto } from './user.dto';
-import { query } from 'express';
 
 @Injectable()
 export class UserService {

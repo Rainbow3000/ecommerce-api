@@ -11,20 +11,20 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   image: string;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   video: string;
 
   @Column({ type: 'text', nullable: false })
   color: string;
 
   @Column({ type: 'text', name: 'old_price', nullable: false })
-  old_price: string;
+  oldPrice: string;
 
   @Column({ type: 'text', name: 'new_price', nullable: false })
-  new_price: string;
+  newPrice: string;
 
   @Column({ type: 'int', default: 0 })
   sold: number;
