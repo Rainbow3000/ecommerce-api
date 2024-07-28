@@ -1,22 +1,21 @@
 import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { ORDER_STATUS } from 'src/common/enums';
 
-export class CreateCategoryDto {
+export class CreateOrderDto {
   @IsString()
-  name: string;
+  totalMoney: string;
 
   @IsString()
-  image: string;
+  @IsOptional()
+  userNote: string;
 }
 
-export class UpdateCategoryDto {
+export class UpdateOrderDto {
   @IsString()
-  name: string;
-
-  @IsString()
-  image: string;
+  orderStatus: ORDER_STATUS;
 }
 
-export class GetListCategoryDto {
+export class GetListOrderDto {
   @IsOptional()
   @IsNumber()
   page: number;

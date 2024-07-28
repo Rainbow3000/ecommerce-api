@@ -32,9 +32,9 @@ export class CategoryService {
       skip: page || DEFAULT_PAGE * limit || DEFAULT_LIMIT,
       take: limit || DEFAULT_LIMIT,
       where,
-      relations:{
-        products: true
-      }
+      relations: {
+        products: true,
+      },
     });
   }
 

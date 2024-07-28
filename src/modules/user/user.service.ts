@@ -12,7 +12,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private dataSource: DataSource,
-  ) { }
+  ) {}
 
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
@@ -64,30 +64,30 @@ export class UserService {
   }
 
   async getListUser({ limit, page, q }: GetUserListDto) {
-    const take = 20
-    const skip = limit * page
+    const take = 20;
+    const skip = limit * page;
 
-    const where: FindOptionsWhere<UserEntity> = {}
+    const where: FindOptionsWhere<UserEntity> = {};
 
     if (q) {
-      where.email = Like(`%${q}%`)
+      where.email = Like(`%${q}%`);
     }
 
     return await this.userRepository.find({
       skip,
       take,
-      where
-    })
+      where,
+    });
   }
 
   async deleteUser(id) {
-    const user = await this.userRepository.findOneBy({ id })
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException(USER_NOT_FOUND)
+      throw new NotFoundException(USER_NOT_FOUND);
     }
 
-    await this.userRepository.softDelete(id)
+    await this.userRepository.softDelete(id);
 
-    return { message: 'success' }
+    return { message: 'success' };
   }
 }

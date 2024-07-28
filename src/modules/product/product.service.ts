@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import {
-  CATEGORY_EXISTED,
   CATEGORY_NOT_FOUND,
   PRODUCT_DUPLICATE_NAME,
   PRODUCT_NOT_FOUND,

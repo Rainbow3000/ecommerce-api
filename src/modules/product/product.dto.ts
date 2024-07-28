@@ -1,87 +1,87 @@
-import { IsNumber, IsOptional, IsString, registerDecorator, ValidateIf, ValidationArguments, ValidationOptions } from "class-validator"
+import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsString()
-  description: string
+  description: string;
 
   @IsString()
-  @ValidateIf(o => !o.video)
-  image: string
+  @ValidateIf((o) => !o.video)
+  image: string;
 
   @IsString()
-  @ValidateIf(o => !o.image)
-  video: string
-  
-  @IsString()
-  color: string
+  @ValidateIf((o) => !o.image)
+  video: string;
 
   @IsString()
-  oldPrice: string
+  color: string;
 
   @IsString()
-  newPrice: string
+  oldPrice: string;
+
+  @IsString()
+  newPrice: string;
 
   @IsNumber()
   @IsOptional()
-  sold: number
+  sold: number;
 
   @IsNumber()
   @IsOptional()
-  stock: number
+  stock: number;
 
   @IsNumber()
-  categoryId: number
+  categoryId: number;
 }
 
 export class UpdateProductDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsString()
-  description: string
+  description: string;
 
   @IsString()
-  @ValidateIf(o => !o.video)
-  image: string
+  @ValidateIf((o) => !o.video)
+  image: string;
 
   @IsString()
-  @ValidateIf(o => !o.image)
-  video: string
-  
-  @IsString()
-  color: string
+  @ValidateIf((o) => !o.image)
+  video: string;
 
   @IsString()
-  oldPrice: string
+  color: string;
 
   @IsString()
-  newPrice: string
+  oldPrice: string;
+
+  @IsString()
+  newPrice: string;
 
   @IsNumber()
   @IsOptional()
-  sold: number
+  sold: number;
 
   @IsNumber()
   @IsOptional()
-  stock: number
+  stock: number;
 
   @IsNumber()
-  categoryId: number
+  categoryId: number;
 }
 
 export class GetListProductDto {
   @IsOptional()
   @IsNumber()
-  page: number
+  page: number;
 
   @IsNumber()
   @IsOptional()
-  limit: number
+  limit: number;
 
   @IsString()
   @IsOptional()
-  q?: string
+  q?: string;
 }

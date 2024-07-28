@@ -40,6 +40,12 @@ export const PRODUCT_NOT_FOUND = {
   message: 'Sản phẩm không tồn tại',
 };
 
+export const ORDER_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Đơn hàng không tồn tại',
+};
+
 export const PRODUCT_DUPLICATE_NAME = {
   error: 'Duplicate',
   statusCode: 400,

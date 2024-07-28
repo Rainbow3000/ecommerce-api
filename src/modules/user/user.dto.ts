@@ -1,13 +1,13 @@
-import { IsNumber, IsOptional, IsString } from "class-validator"
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GetUserListDto {
   @IsString()
   @IsOptional()
-  q?: string
+  q?: string;
 
   @IsNumber()
-  limit: number
+  limit: number;
 
   @IsNumber()
-  page: number
+  page: number;
 }
