@@ -21,16 +21,18 @@ export class CategoryService {
     private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  async list({ limit, page, q }: GetListCategoryDto) {
+  async list(payload: GetListCategoryDto) {
+    const limit = payload.limit || DEFAULT_LIMIT;
+    const page = payload.page || DEFAULT_PAGE;
     const where: FindOptionsWhere<CategoryEntity> = {};
 
-    if (q) {
-      where.name = Like(`%${q}%`);
+    if (payload.q) {
+      where.name = Like(`%${payload.q}%`);
     }
 
     return await this.categoryRepository.find({
-      skip: page || DEFAULT_PAGE * limit || DEFAULT_LIMIT,
-      take: limit || DEFAULT_LIMIT,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       relations: {
         products: true,

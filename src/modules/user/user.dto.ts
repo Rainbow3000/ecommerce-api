@@ -11,3 +11,17 @@ export class GetUserListDto {
   @IsNumber()
   page: number;
 }
+
+export class UpdateUserInfo {
+  @IsString()
+  @IsOptional()
+  address: string;
+
+  @IsString()
+  @IsOptional()
+  phoneNumber: string;
+
+  @IsString()
+  @IsOptional()
+  avatar: string;
+}

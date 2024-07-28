@@ -27,16 +27,18 @@ export class ProductService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async list({ limit, page, q }: GetListProductDto) {
+  async list(payload: GetListProductDto) {
+    const limit = payload.limit || DEFAULT_LIMIT;
+    const page = payload.page || DEFAULT_PAGE;
     const where: FindOptionsWhere<ProductEntity> = {};
 
-    if (q) {
-      where.name = Like(`%${q}%`);
+    if (payload.q) {
+      where.name = Like(`%${payload.q}%`);
     }
 
     return await this.productRepository.find({
-      skip: page || DEFAULT_PAGE * limit || DEFAULT_LIMIT,
-      take: limit || DEFAULT_LIMIT,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
     });
   }

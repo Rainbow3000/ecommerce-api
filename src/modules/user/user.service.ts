@@ -4,7 +4,10 @@ import { USER_NOT_FOUND } from 'src/common/error';
 import { UserEntity } from 'src/entities/user.entity';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
 import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
-import { GetUserListDto } from './user.dto';
+import { GetUserListDto, UpdateUserInfo } from './user.dto';
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
+import { UserInfoEntity } from 'src/entities/user_info.entity';
+import { userInfo } from 'os';
 
 @Injectable()
 export class UserService {
@@ -63,30 +66,65 @@ export class UserService {
     return roles;
   }
 
-  async getListUser({ limit, page, q }: GetUserListDto) {
-    const take = 20;
-    const skip = limit * page;
+  async getListUser(payload: GetUserListDto) {
+    const limit = payload.limit || DEFAULT_LIMIT;
+    const page = payload.page || DEFAULT_PAGE;
 
     const where: FindOptionsWhere<UserEntity> = {};
 
-    if (q) {
-      where.email = Like(`%${q}%`);
+    if (payload.q) {
+      where.email = Like(`%${payload.q}%`);
     }
 
     return await this.userRepository.find({
-      skip,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
     });
   }
 
   async deleteUser(id) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        userInfo: true,
+      },
+    });
     if (!user) {
       throw new NotFoundException(USER_NOT_FOUND);
     }
 
     await this.userRepository.softDelete(id);
+
+    if (user.userInfo)
+      await this.dataSource
+        .getRepository(userInfo)
+        .softRemove({ id: user.userInfo.id });
+
+    return { message: 'success' };
+  }
+
+  async updateInfo(payload: UpdateUserInfo, userId: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+      relations: {
+        userInfo: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException(USER_NOT_FOUND);
+
+    if (!user.userInfo) {
+      await this.dataSource.getRepository(UserInfoEntity).insert(payload);
+    } else {
+      await this.dataSource
+        .getRepository(UserInfoEntity)
+        .update({ id: user.userInfo.id }, payload);
+    }
 
     return { message: 'success' };
   }
