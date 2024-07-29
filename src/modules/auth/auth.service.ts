@@ -59,19 +59,25 @@ export class AuthService {
   async login(payload: LoginAuthDto) {
     const user = await this.userRepository.findOne({
       where: {
-        email: payload.email
+        email:payload.email,
       },
       relations: {
         userRoles: {
-          role: true
-        }
+          role: true,
+        },
+        userInfo: true,
       },
       select: {
+        id: true,
+        email: true,
+        userName: true,
+        password: true,
         userRoles: {
+          roleId: true,
           role: {
-            roleName: true
-          }
-        }
+            roleName: true,
+          },
+        },
       }
     });
 
@@ -85,7 +91,7 @@ export class AuthService {
       throw new UnauthorizedException(PASSWORD_INCORRECT);
     }
 
-    const subject = { userId: user.id, username: user.userName, roleName: user.userRoles.filter(role => role.role.roleName) };
+    const subject = { userId: user.id, username: user.userName, roleName: user.userRoles.map(role => role.role.roleName) };
 
     const { password, ...restData } = user;
 
