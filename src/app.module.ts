@@ -14,6 +14,7 @@ import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
 import { OrderDetailsModule } from './modules/order-details/order-details.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ChatModule } from './modules/chat/chat.module';
     ProductModule,
     OrderModule,
     OrderDetailsModule,
+    CommentModule,
     ChatModule,
     JwtModule,
   ],
