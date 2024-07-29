@@ -29,7 +29,7 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.user)
   comments: CommentEntity[];
 
-  @OneToMany(() => ChatEntity, (chat) => chat.user)
+  @OneToMany(() => ChatEntity, (chat) => chat.toUser)
   chats: ChatEntity[];
 
   @OneToOne(() => UserInfoEntity)

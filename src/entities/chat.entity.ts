@@ -10,13 +10,13 @@ export class ChatEntity extends BaseEntity {
   @Column({ type: 'int', name: 'to_id', nullable: false })
   toId: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   content: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   image: string;
 
   @ManyToOne(() => UserEntity, (user) => user.chats)
-  @JoinColumn({ name: 'from_id' })
-  user: UserEntity;
+  @JoinColumn({ name: 'to_id' })
+  toUser: UserEntity;
 }

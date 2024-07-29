@@ -11,10 +11,10 @@ export class CommentEntity extends BaseEntity {
   @Column({ type: 'int', name: 'user_id', nullable: false })
   userId: number;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   content: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   image: string;
 
   @ManyToOne(() => UserEntity, (user) => user.comments)

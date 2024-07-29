@@ -46,6 +46,24 @@ export const ORDER_NOT_FOUND = {
   message: 'Đơn hàng không tồn tại',
 };
 
+export const COMMENT_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Bình luận không tồn tại',
+};
+
+export const CHAT_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Tin nhắn không tồn tại',
+};
+
+export const ORDER_DETAILS_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Đơn hàng chi tiết không tồn tại',
+};
+
 export const PRODUCT_DUPLICATE_NAME = {
   error: 'Duplicate',
   statusCode: 400,

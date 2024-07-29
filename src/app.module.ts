@@ -12,6 +12,8 @@ import { UserModule } from './modules/user/user.module';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
+import { OrderDetailsModule } from './modules/order-details/order-details.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { OrderModule } from './modules/order/order.module';
     CategoryModule,
     ProductModule,
     OrderModule,
+    OrderDetailsModule,
+    ChatModule,
     JwtModule,
   ],
   controllers: [AppController],
