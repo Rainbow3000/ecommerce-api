@@ -9,4 +9,4 @@ import { CommentEntity } from 'src/entities/comment.entity';
   providers: [CommentService],
   controllers: [CommentController],
 })
-export class CommentModule { }
+export class CommentModule {}

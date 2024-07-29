@@ -26,7 +26,7 @@ export class AuthService {
     private userRepository: Repository<UserEntity>,
     private dataSource: DataSource,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(payload: CreateAuthDto) {
     try {
@@ -59,7 +59,7 @@ export class AuthService {
   async login(payload: LoginAuthDto) {
     const user = await this.userRepository.findOne({
       where: {
-        email:payload.email,
+        email: payload.email,
       },
       relations: {
         userRoles: {
@@ -78,7 +78,7 @@ export class AuthService {
             roleName: true,
           },
         },
-      }
+      },
     });
 
     if (!user) {
@@ -91,7 +91,11 @@ export class AuthService {
       throw new UnauthorizedException(PASSWORD_INCORRECT);
     }
 
-    const subject = { userId: user.id, username: user.userName, roleName: user.userRoles.map(role => role.role.roleName) };
+    const subject = {
+      userId: user.id,
+      username: user.userName,
+      roleName: user.userRoles.map((role) => role.role.roleName),
+    };
 
     const { password, ...restData } = user;
 

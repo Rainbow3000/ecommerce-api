@@ -10,6 +10,7 @@ import { ORDER_NOT_FOUND } from 'src/common/error';
 import { CreateOrderDto, GetListOrderDto, UpdateOrderDto } from './Order.dto';
 import { OrderEntity } from 'src/entities/order.entity';
 import { OrderDetailsEntity } from 'src/entities/order_details.entity';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +18,7 @@ export class OrderService {
     @InjectRepository(OrderEntity)
     private readonly orderRepository: Repository<OrderEntity>,
     private readonly dataSource: DataSource,
+    private readonly mailService: MailService,
   ) {}
 
   async list(payload: GetListOrderDto) {
@@ -56,6 +58,17 @@ export class OrderService {
 
   async create(payload: CreateOrderDto, userId: number) {
     await this.orderRepository.insert({ ...payload, userId });
+
+    const token = Math.floor(1000 + Math.random() * 9000).toString();
+
+    try {
+      await this.mailService.sendUserWelcome(
+        'nguyenducthinh0401@gmail.com',
+        token,
+      );
+    } catch (error) {
+      console.log(error);
+    }
 
     return {
       statusCode: 201,
