@@ -13,7 +13,7 @@ export class ChatService {
     @InjectRepository(ChatEntity)
     private readonly chatRepository: Repository<ChatEntity>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async list(payload: GetListChatDto) {
     const limit = payload.limit || DEFAULT_LIMIT;
@@ -23,8 +23,19 @@ export class ChatService {
       skip: (page - 1) * limit,
       take: limit,
       relations: {
+        fromUser: true,
         toUser: true,
       },
+      select: {
+        fromUser: {
+          userName: true,
+          email: true
+        },
+        toUser: {
+          userName: true,
+          email: true
+        }
+      }
     });
   }
 
@@ -39,6 +50,15 @@ export class ChatService {
       where: {
         fromId: user.id,
       },
+      relations: {
+        toUser: true
+      },
+      select: {
+        toUser: {
+          userName: true,
+          email: true
+        }
+      }
     });
   }
 

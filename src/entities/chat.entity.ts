@@ -17,6 +17,10 @@ export class ChatEntity extends BaseEntity {
   image: string;
 
   @ManyToOne(() => UserEntity, (user) => user.chats)
+  @JoinColumn({ name: 'from_id' })
+  fromUser: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.chats)
   @JoinColumn({ name: 'to_id' })
   toUser: UserEntity;
 }

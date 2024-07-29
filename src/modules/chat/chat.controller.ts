@@ -7,18 +7,27 @@ import {
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { BASE_API_URL } from 'src/common/constants';
 import { ChatService } from './chat.service';
 import { CreateChatDto, GetListChatDto, UpdateChatDto } from './chat.dto';
+import { Roles } from 'src/metadata/auth.metadata';
+import { ROLE } from 'src/common/enums';
 
+@Roles(ROLE.USER,ROLE.SUPER_ADMIN, ROLE.ADMIN)
 @Controller(`${BASE_API_URL}/chat`)
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(private readonly chatService: ChatService) { }
 
   @Get()
   list(@Query() query: GetListChatDto) {
     return this.chatService.list(query);
+  }
+
+  @Get('by-user')
+  getByUser(@Req() req) {
+    return this.chatService.getByUser(req.user)
   }
 
   @Post()
