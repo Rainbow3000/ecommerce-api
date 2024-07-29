@@ -15,6 +15,7 @@ import { OrderModule } from './modules/order/order.module';
 import { OrderDetailsModule } from './modules/order-details/order-details.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { CommentModule } from './modules/comment/comment.module';
     OrderDetailsModule,
     CommentModule,
     ChatModule,
+    MailModule,
     JwtModule,
   ],
   controllers: [AppController],
