@@ -26,7 +26,7 @@ export class AuthService {
     private userRepository: Repository<UserEntity>,
     private dataSource: DataSource,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(payload: CreateAuthDto) {
     try {
@@ -57,7 +57,23 @@ export class AuthService {
   }
 
   async login(payload: LoginAuthDto) {
-    const user = await this.userRepository.findOneBy({ email: payload.email });
+    const user = await this.userRepository.findOne({
+      where: {
+        email: payload.email
+      },
+      relations: {
+        userRoles: {
+          role: true
+        }
+      },
+      select: {
+        userRoles: {
+          role: {
+            roleName: true
+          }
+        }
+      }
+    });
 
     if (!user) {
       throw new NotFoundException(USER_NOT_FOUND);
@@ -69,7 +85,7 @@ export class AuthService {
       throw new UnauthorizedException(PASSWORD_INCORRECT);
     }
 
-    const subject = { userId: user.id, username: user.userName };
+    const subject = { userId: user.id, username: user.userName, roleName: user.userRoles.filter(role => role.role.roleName) };
 
     const { password, ...restData } = user;
 
