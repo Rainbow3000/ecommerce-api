@@ -18,6 +18,7 @@ import {
   UpdateProductDto,
 } from './product.dto';
 import { CategoryEntity } from 'src/entities/category.entity';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class ProductService {
@@ -36,19 +37,29 @@ export class ProductService {
       where.name = Like(`%${payload.q}%`);
     }
 
-    return await this.productRepository.find({
+    const data = await this.productRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       where,
     });
+
+    return {
+      statusCode: 200,
+      message: 'Lấy danh sách sản phẩm thành công',
+      data,
+    } as TResult;
   }
 
   async single(id: number) {
-    const product = await this.productRepository.findOneBy({ id });
+    const data = await this.productRepository.findOneBy({ id });
 
-    if (!product) throw new NotFoundException(PRODUCT_NOT_FOUND);
+    if (!data) throw new NotFoundException(PRODUCT_NOT_FOUND);
 
-    return product;
+    return {
+      statusCode: 200,
+      message: 'Lấy sản phẩm thành công',
+      data,
+    } as TResult;
   }
 
   async create(payload: CreateProductDto) {
@@ -71,7 +82,7 @@ export class ProductService {
     return {
       statusCode: 201,
       message: 'Tạo sản phẩm thành công',
-    };
+    } as TResult;
   }
 
   async update(id: number, payload: UpdateProductDto) {
@@ -90,7 +101,7 @@ export class ProductService {
     return {
       statusCode: 200,
       message: 'Cập nhật sản phẩm thành công',
-    };
+    } as TResult;
   }
 
   async delete(id: number) {
@@ -105,6 +116,6 @@ export class ProductService {
     return {
       statusCode: 200,
       message: 'Xóa sản phẩm thành công',
-    };
+    } as TResult;
   }
 }

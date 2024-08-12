@@ -46,6 +46,7 @@ export class AuthService {
           .insert({ userId: user.id, roleId: role.id });
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...restData } = user;
 
       return restData;
@@ -97,6 +98,7 @@ export class AuthService {
       roleName: user.userRoles.map((role) => role.role.roleName),
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...restData } = user;
 
     return {

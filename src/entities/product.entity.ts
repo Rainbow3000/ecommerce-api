@@ -11,10 +11,10 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   image: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   video: string;
 
   @Column({ type: 'text', nullable: false })

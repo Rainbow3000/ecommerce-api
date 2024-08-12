@@ -7,11 +7,11 @@ export class CategoryEntity extends BaseEntity {
   @Column({ type: 'varchar', unique: true, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', unique: true, nullable: false })
+  @Column({ type: 'longtext', nullable: false })
   image: string;
 
   @Column({ type: 'int', name: 'product_number', default: 0 })
-  product_number: number;
+  productNumber: number;
 
   @OneToMany(() => ProductEntity, (product) => product.category)
   products: ProductEntity[];

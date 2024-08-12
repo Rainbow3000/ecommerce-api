@@ -25,6 +25,11 @@ export class CategoryController {
     return this.categoryService.list(query);
   }
 
+  @Get(':id')
+  single(@Param('id') id: number) {
+    return this.categoryService.single(id);
+  }
+
   @Post()
   create(@Body() payload: CreateCategoryDto) {
     return this.categoryService.create(payload);

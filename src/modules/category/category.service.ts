@@ -13,6 +13,7 @@ import {
 } from './category.dto';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { CATEGORY_EXISTED, CATEGORY_NOT_FOUND } from 'src/common/error';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class CategoryService {
@@ -30,7 +31,7 @@ export class CategoryService {
       where.name = Like(`%${payload.q}%`);
     }
 
-    return await this.categoryRepository.find({
+    const data = await this.categoryRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       where,
@@ -38,6 +39,24 @@ export class CategoryService {
         products: true,
       },
     });
+
+    return {
+      statusCode: 200,
+      message: 'Lấy danh sách danh mục thành công',
+      data,
+    } as TResult;
+  }
+
+  async single(id: number) {
+    const data = await this.categoryRepository.findOneBy({ id });
+
+    if (!data) throw new NotFoundException(CATEGORY_NOT_FOUND);
+
+    return {
+      statusCode: 200,
+      message: 'Lấy danh mục thành công',
+      data,
+    } as TResult;
   }
 
   async create(payload: CreateCategoryDto) {
