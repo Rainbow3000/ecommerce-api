@@ -8,6 +8,7 @@ import { GetUserListDto, UpdateUserInfo } from './user.dto';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { UserInfoEntity } from 'src/entities/user_info.entity';
 import { userInfo } from 'os';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class UserService {
@@ -76,11 +77,17 @@ export class UserService {
       where.email = Like(`%${payload.q}%`);
     }
 
-    return await this.userRepository.find({
+    const data = await this.userRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       where,
     });
+
+    return {
+      statusCode: 200,
+      message: 'Lấy danh sách người dùng thành công',
+      data,
+    } as TResult;
   }
 
   async deleteUser(id) {

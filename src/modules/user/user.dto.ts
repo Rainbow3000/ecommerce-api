@@ -6,10 +6,12 @@ export class GetUserListDto {
   q?: string;
 
   @IsNumber()
-  limit: number;
+  @IsOptional()
+  limit?: number;
 
   @IsNumber()
-  page: number;
+  @IsOptional()
+  page?: number;
 }
 
 export class UpdateUserInfo {
