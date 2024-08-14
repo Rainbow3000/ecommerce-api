@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ORDER_STATUS } from 'src/common/enums';
 import { TResult } from 'src/common/types';
 import { CategoryEntity } from 'src/entities/category.entity';
 import { CommentEntity } from 'src/entities/comment.entity';
@@ -10,7 +11,7 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ChartsService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) { }
 
   async chartsCount() {
     const [user, product, order, category, comment] = await Promise.all([
@@ -92,10 +93,53 @@ export class ChartsService {
     } as TResult;
   }
 
-  async findProductSellest (){
-    const orderDetails = await this.dataSource.getRepository(OrderDetailsEntity).find()
+  async getProductSellest() {
+    const product = await this.dataSource.getRepository(ProductEntity).find({
+      order: {
+        sold: 'DESC'
+      },
+      take: 1
+    })
 
-    
+    return {
+      statusCode: 200,
+      message: 'Thống kê đơn hàng',
+      data: product[0],
+    } as TResult;
+  }
 
+  async getRevenueMonthly() {
+    const order = await this.dataSource.getRepository(OrderEntity).find({
+      where: {
+        orderStatus: ORDER_STATUS.SUCCESS
+      }
+    });
+
+    if (!order.length) return
+
+    const data = order.reduce((initValue, currentValue) => {
+      const month = currentValue.createdAt.getMonth() + 1
+
+      const index = initValue.findIndex((item) => item[month]);
+
+      if (index !== -1) {
+        const total = initValue[index][month] + parseFloat(currentValue.totalMoney)
+        initValue[index][month] = total
+
+        return initValue
+      }
+
+      const obj = {}
+
+      obj[month] = parseFloat(currentValue.totalMoney)
+
+      return [...initValue, obj]
+    }, []);
+
+    return {
+      statusCode: 200,
+      message: 'Thống kê doanh thu mỗi tháng',
+      data,
+    } as TResult;
   }
 }
