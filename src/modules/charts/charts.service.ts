@@ -20,28 +20,10 @@ export class ChartsService {
       await this.dataSource.getRepository(CommentEntity).count(),
     ]);
 
-    const data = [
-      {
-        name: 'User',
-        value: user,
-      },
-      {
-        name: 'Product',
-        value: product,
-      },
-      {
-        name: 'Order',
-        value: order,
-      },
-      {
-        name: 'Category',
-        value: category,
-      },
-      {
-        name: 'Comment',
-        value: comment,
-      },
-    ];
+    const data = {
+      labels: ['Người dùng', 'Sản phẩm', 'Đơn hàng', 'Danh mục', 'Bình luận'],
+      series: [user, product, order, category, comment],
+    };
 
     return {
       statusCode: 200,

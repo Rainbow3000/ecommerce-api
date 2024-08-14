@@ -22,6 +22,6 @@ export class OrderEntity extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @OneToMany(() => OrderDetailsEntity, (orderDetaisl) => orderDetaisl.order)
+  @OneToMany(() => OrderDetailsEntity, (orderDetails) => orderDetails.order)
   orderDetails: OrderDetailsEntity[];
 }

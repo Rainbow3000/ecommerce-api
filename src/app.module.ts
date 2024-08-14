@@ -16,6 +16,7 @@ import { OrderDetailsModule } from './modules/order-details/order-details.module
 import { ChatModule } from './modules/chat/chat.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { MailModule } from './modules/mail/mail.module';
+import { ChartsModule } from './modules/charts/charts.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { MailModule } from './modules/mail/mail.module';
     ChatModule,
     MailModule,
     JwtModule,
+    ChartsModule
   ],
   controllers: [AppController],
   providers: [
