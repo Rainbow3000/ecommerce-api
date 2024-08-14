@@ -10,4 +10,14 @@ export class ChartsController {
   count() {
     return this.chartsService.chartsCount();
   }
+
+  @Get('user-stat')
+  userStat() {
+    return this.chartsService.userStat();
+  }
+
+  @Get('order-stat')
+  orderStat() {
+    return this.chartsService.orderStat();
+  }
 }
