@@ -82,7 +82,7 @@ export class ChartsService {
     });
 
     Object.keys(counts).forEach((item) => {
-      data.labels.push(`Tháng ${item}`);
+      data.labels.push(`T${item}`);
       data.series.push(counts[item]);
     });
 
@@ -117,24 +117,32 @@ export class ChartsService {
 
     if (!order.length) return
 
-    const data = order.reduce((initValue, currentValue) => {
+    const data = {
+      labels: [],
+      series: [],
+    };
+
+    const revenue = order.reduce((initValue, currentValue) => {
       const month = currentValue.createdAt.getMonth() + 1
 
-      const index = initValue.findIndex((item) => item[month]);
+      const checkExisted = initValue[month]
 
-      if (index !== -1) {
-        const total = initValue[index][month] + parseFloat(currentValue.totalMoney)
-        initValue[index][month] = total
+      if (checkExisted) {
+        const total = initValue[month] + parseFloat(currentValue.totalMoney)
+        initValue[month] = total
 
         return initValue
       }
 
-      const obj = {}
+      initValue[month] = parseFloat(currentValue.totalMoney)
 
-      obj[month] = parseFloat(currentValue.totalMoney)
+      return initValue
+    }, {})
 
-      return [...initValue, obj]
-    }, []);
+    Object.keys(revenue).forEach((item) => {
+      data.labels.push(`T${item}`);
+      data.series.push(revenue[item]);
+    });
 
     return {
       statusCode: 200,
