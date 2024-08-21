@@ -11,7 +11,7 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ChartsService {
-  constructor(private readonly dataSource: DataSource) { }
+  constructor(private readonly dataSource: DataSource) {}
 
   async chartsCount() {
     const [user, product, order, category, comment] = await Promise.all([
@@ -24,8 +24,7 @@ export class ChartsService {
 
     const data = {
       labels: ['Người dùng', 'Sản phẩm', 'Đơn hàng', 'Danh mục', 'Bình luận'],
-      // series: [user, product, order, category, comment],
-      series: [5, 10, 15, 20, 25],
+      series: [user, product, order, category, comment],
     };
 
     return {
@@ -96,10 +95,10 @@ export class ChartsService {
   async getProductSellest() {
     const product = await this.dataSource.getRepository(ProductEntity).find({
       order: {
-        sold: 'DESC'
+        sold: 'DESC',
       },
-      take: 1
-    })
+      take: 1,
+    });
 
     return {
       statusCode: 200,
@@ -111,11 +110,11 @@ export class ChartsService {
   async getRevenueMonthly() {
     const order = await this.dataSource.getRepository(OrderEntity).find({
       where: {
-        orderStatus: ORDER_STATUS.SUCCESS
-      }
+        orderStatus: ORDER_STATUS.SUCCESS,
+      },
     });
 
-    if (!order.length) return
+    if (!order.length) return;
 
     const data = {
       labels: [],
@@ -123,21 +122,21 @@ export class ChartsService {
     };
 
     const revenue = order.reduce((initValue, currentValue) => {
-      const month = currentValue.createdAt.getMonth() + 1
+      const month = currentValue.createdAt.getMonth() + 1;
 
-      const checkExisted = initValue[month]
+      const checkExisted = initValue[month];
 
       if (checkExisted) {
-        const total = initValue[month] + parseFloat(currentValue.totalMoney)
-        initValue[month] = total
+        const total = initValue[month] + parseFloat(currentValue.totalMoney);
+        initValue[month] = total;
 
-        return initValue
+        return initValue;
       }
 
-      initValue[month] = parseFloat(currentValue.totalMoney)
+      initValue[month] = parseFloat(currentValue.totalMoney);
 
-      return initValue
-    }, {})
+      return initValue;
+    }, {});
 
     Object.keys(revenue).forEach((item) => {
       data.labels.push(`T${item}`);
@@ -150,4 +149,55 @@ export class ChartsService {
       data,
     } as TResult;
   }
+
+  async chartComposeProduct() {
+    const [totalProduct, countProductSelled, totalOrder] = await Promise.all([
+      await this.dataSource.getRepository(ProductEntity).count(),
+      (await this.dataSource.getRepository(OrderDetailsEntity).find()).reduce(
+        (curValue, nextValue) => {
+          return curValue + nextValue.quantity;
+        },
+        0,
+      ),
+      (await this.dataSource.getRepository(OrderEntity).find()).reduce(
+        (curValue, nextValue) => {
+          return curValue + parseFloat(nextValue.totalMoney);
+        },
+        0,
+      ),
+    ]);
+
+    return {
+      totalProduct,
+      countProductSelled,
+      totalOrder,
+    };
+  }
+
+  async chartCategory() {
+    const [totalCategory] = await Promise.all([
+      await this.dataSource.getRepository(CategoryEntity).count(),
+    ]);
+
+    const data = {
+      labels: [],
+      series: [],
+    };
+
+    (await this.dataSource.getRepository(CategoryEntity).find()).forEach(
+      (item) => {
+        data.labels.push(item.name);
+        data.series.push(item.productNumber);
+      },
+    );
+
+    return {
+      totalCategory,
+      data,
+    };
+  }
+
+  async chartComment() {}
+
+  async chartChat() {}
 }

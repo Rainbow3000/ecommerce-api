@@ -4,7 +4,17 @@ import { ChartsService } from './charts.service';
 
 @Controller(`${BASE_API_URL}/charts`)
 export class ChartsController {
-  constructor(private chartsService: ChartsService) { }
+  constructor(private chartsService: ChartsService) {}
+
+  @Get('chart-compose-product')
+  getChartComposeProduct() {
+    return this.chartsService.chartComposeProduct();
+  }
+
+  @Get('chart-category')
+  getChartCategory() {
+    return this.chartsService.chartCategory();
+  }
 
   @Get('count')
   count() {
@@ -28,6 +38,6 @@ export class ChartsController {
 
   @Get('revenue')
   getRevenue() {
-    return this.chartsService.getRevenueMonthly()
+    return this.chartsService.getRevenueMonthly();
   }
 }
