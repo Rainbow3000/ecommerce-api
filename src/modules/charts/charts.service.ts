@@ -11,7 +11,7 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ChartsService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) { }
 
   async chartsCount() {
     const [user, product, order, category, comment] = await Promise.all([
@@ -114,11 +114,18 @@ export class ChartsService {
       },
     });
 
-    if (!order.length) return;
-
     const data = {
       labels: [],
       series: [],
+    };
+
+
+    if (!order.length) {
+      return {
+        statusCode: 200,
+        message: 'Thống kê doanh thu mỗi tháng',
+        data,
+      } as TResult;
     };
 
     const revenue = order.reduce((initValue, currentValue) => {
@@ -197,7 +204,7 @@ export class ChartsService {
     };
   }
 
-  async chartComment() {}
+  async chartComment() { }
 
-  async chartChat() {}
+  async chartChat() { }
 }
