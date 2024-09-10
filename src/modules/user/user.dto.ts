@@ -17,6 +17,10 @@ export class GetUserListDto {
 export class UpdateUserInfo {
   @IsString()
   @IsOptional()
+  userName: string;
+
+  @IsString()
+  @IsOptional()
   address: string;
 
   @IsString()
