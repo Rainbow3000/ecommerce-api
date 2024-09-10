@@ -20,6 +20,9 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   color: string;
 
+  @Column({ type: 'text', nullable: false })
+  size: string;
+
   @Column({ type: 'text', name: 'old_price', nullable: false })
   oldPrice: string;
 

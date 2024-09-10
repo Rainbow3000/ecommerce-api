@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional, IsString, ValidateIf } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -17,6 +17,9 @@ export class CreateProductDto {
 
   @IsString()
   color: string;
+
+  @IsString()
+  size: string;
 
   @IsString()
   oldPrice: string;
@@ -55,6 +58,9 @@ export class UpdateProductDto {
   color: string;
 
   @IsString()
+  size: string;
+
+  @IsString()
   oldPrice: string;
 
   @IsString()
@@ -84,4 +90,20 @@ export class GetListProductDto {
   @IsString()
   @IsOptional()
   q?: string;
+
+  @IsNumberString()
+  @IsOptional()
+  categoryId?: number;
+
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @IsString()
+  @IsOptional()
+  color?: string;
+
+  @IsString()
+  @IsOptional()
+  price?: string;
 }

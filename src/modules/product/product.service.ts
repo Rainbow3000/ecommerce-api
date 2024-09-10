@@ -4,7 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindOptionsOrderValue,
+  FindOptionsWhere,
+  Like,
+  Repository,
+} from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import {
   CATEGORY_NOT_FOUND,
@@ -31,16 +37,34 @@ export class ProductService {
   async list(payload: GetListProductDto) {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
+    const order: { newPrice?: FindOptionsOrderValue } = {};
     const where: FindOptionsWhere<ProductEntity> = {};
 
     if (payload.q) {
       where.name = Like(`%${payload.q}%`);
     }
 
+    if (payload.size) {
+      where.size = Like(`%${payload.size}%`);
+    }
+
+    if (payload.color) {
+      where.color = Like(`%${payload.color}%`);
+    }
+
+    if (payload.categoryId) {
+      where.categoryId = payload.categoryId;
+    }
+
+    if (payload.price) {
+      order.newPrice = payload.price as FindOptionsOrderValue;
+    }
+
     const data = await this.productRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       where,
+      order,
     });
 
     return {
