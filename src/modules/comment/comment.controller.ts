@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { BASE_API_URL } from 'src/common/constants';
 import { CommentService } from './comment.service';
@@ -15,6 +16,8 @@ import {
   GetListCommentDto,
   UpdateCommentDto,
 } from './comment.dto';
+import { Roles } from 'src/metadata/auth.metadata';
+import { ROLE } from 'src/common/enums';
 
 @Controller(`${BASE_API_URL}/comment`)
 export class CommentController {
@@ -26,8 +29,9 @@ export class CommentController {
   }
 
   @Post()
-  create(@Body() payload: CreateCommentDto) {
-    return this.commentService.create(payload);
+  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
+  create(@Body() payload: CreateCommentDto, @Req() req) {
+    return this.commentService.create(payload, req.user);
   }
 
   @Put(':id')

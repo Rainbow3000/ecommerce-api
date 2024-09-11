@@ -18,6 +18,7 @@ import { UserRoleEntity } from 'src/entities/user_role.entity';
 import { RoleEntity } from 'src/entities/role.entity';
 import { ROLE } from 'src/common/enums';
 import { JwtService } from '@nestjs/jwt';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,11 @@ export class AuthService {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...restData } = user;
 
-      return restData;
+      return {
+        message: 'Tạo tài khoản thành công',
+        statusCode: 201,
+        data: restData,
+      } as TResult;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
         throw new BadRequestException(USER_EXISTED);
@@ -102,8 +107,12 @@ export class AuthService {
     const { password, ...restData } = user;
 
     return {
-      ...restData,
-      accessToken: await this.jwtService.signAsync(subject),
-    };
+      data: {
+        ...restData,
+        accessToken: await this.jwtService.signAsync(subject),
+      },
+      message: 'Đăng nhập thành công',
+      statusCode: 200,
+    } as TResult;
   }
 }

@@ -1,11 +1,8 @@
-import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional, IsString, ValidateIf } from 'class-validator';
 
 export class CreateCommentDto {
   @IsNumber()
   productId: number;
-
-  @IsNumber()
-  userId: number;
 
   @IsString()
   @ValidateIf((o) => !o.image)
@@ -44,4 +41,8 @@ export class GetListCommentDto {
   @IsString()
   @IsOptional()
   q?: string;
+
+  @IsNumberString()
+  @IsOptional()
+  productId?: number;
 }

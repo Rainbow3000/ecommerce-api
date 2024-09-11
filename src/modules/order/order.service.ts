@@ -4,13 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { ORDER_NOT_FOUND } from 'src/common/error';
 import { CreateOrderDto, GetListOrderDto, UpdateOrderDto } from './Order.dto';
 import { OrderEntity } from 'src/entities/order.entity';
 import { OrderDetailsEntity } from 'src/entities/order_details.entity';
 import { MailService } from '../mail/mail.service';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class OrderService {
@@ -30,12 +31,35 @@ export class OrderService {
       take: limit,
       relations: {
         user: true,
+        orderDetails: true,
       },
       select: {
         user: {
           email: true,
         },
       },
+    });
+  }
+
+  async listByUser(payload: GetListOrderDto, userId: number) {
+    const limit = payload.limit || DEFAULT_LIMIT;
+    const page = payload.page || DEFAULT_PAGE;
+
+    return await this.orderRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: {
+        user: true,
+        orderDetails: true,
+      },
+      select: {
+        user: {
+          email: true,
+        },
+      },
+      where:{
+        userId
+      }
     });
   }
 
@@ -57,7 +81,7 @@ export class OrderService {
   }
 
   async create(payload: CreateOrderDto, userId: number) {
-    await this.orderRepository.insert({ ...payload, userId });
+    const order = await this.orderRepository.insert({ ...payload, userId });
 
     const token = Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -73,7 +97,8 @@ export class OrderService {
     return {
       statusCode: 201,
       message: 'Tạo đơn hàng thành công',
-    };
+      data: order.raw.insertId,
+    } as TResult;
   }
 
   async update(id: number, { orderStatus }: UpdateOrderDto) {

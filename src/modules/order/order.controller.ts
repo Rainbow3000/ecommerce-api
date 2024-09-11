@@ -29,6 +29,12 @@ export class OrderController {
     return this.orderService.single(id);
   }
 
+  @Get('by-user')
+  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
+  listByUser(@Query() query: GetListOrderDto, @Req() req) {
+    return this.orderService.listByUser(query, req.user);
+  }
+
   @Post()
   @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
   create(@Body() payload: CreateOrderDto, @Req() req) {

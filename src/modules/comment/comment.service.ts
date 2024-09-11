@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/entities/comment.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import {
   CreateCommentDto,
   GetListCommentDto,
@@ -14,6 +14,8 @@ import {
   USER_NOT_FOUND,
 } from 'src/common/error';
 import { ProductEntity } from 'src/entities/product.entity';
+import { UserEntity } from 'src/entities/user.entity';
+import { TResult } from 'src/common/types';
 
 @Injectable()
 export class CommentService {
@@ -27,20 +29,69 @@ export class CommentService {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
 
-    return await this.commentRepository.find({
+    const where: FindOptionsWhere<CommentEntity> = {};
+
+    if (payload.productId) {
+      where.productId = payload.productId;
+    }
+
+    const data =  await this.commentRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
-        product: true,
         user: true,
       },
+      where,
+      select: {
+        user: {
+          userName: true,
+        },
+        id: true,
+        content: true,
+        image: true,
+        productId: true
+      },
     });
+
+    return { data } as TResult
   }
 
-  async create(payload: CreateCommentDto) {
+
+  async listByUser(payload: GetListCommentDto) {
+    const limit = payload.limit || DEFAULT_LIMIT;
+    const page = payload.page || DEFAULT_PAGE;
+
+    const where: FindOptionsWhere<CommentEntity> = {};
+
+    if (payload.productId) {
+      where.productId = payload.productId;
+    }
+
+    const data =  await this.commentRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: {
+        user: true,
+      },
+      where,
+      select: {
+        user: {
+          userName: true,
+        },
+        id: true,
+        content: true,
+        image: true,
+        productId: true
+      },
+    });
+
+    return { data } as TResult
+  }
+
+  async create(payload: CreateCommentDto, userId: number) {
     const user = await this.dataSource
-      .getRepository(CommentEntity)
-      .findOneBy({ id: payload.userId });
+      .getRepository(UserEntity)
+      .findOneBy({ id: userId });
 
     if (!user) throw new NotFoundException(USER_NOT_FOUND);
 
@@ -50,9 +101,9 @@ export class CommentService {
 
     if (!product) throw new NotFoundException(PRODUCT_NOT_FOUND);
 
-    await this.commentRepository.insert(payload);
+    await this.commentRepository.insert({ ...payload, userId });
 
-    return { message: 'success' };
+    return { message: 'Thêm bình luận thành công' };
   }
 
   async update(id: number, payload: UpdateCommentDto) {
@@ -74,7 +125,7 @@ export class CommentService {
 
     await this.commentRepository.update(id, payload);
 
-    return { message: ' success' };
+    return { message: ' Cập nhật bình luận thành công' };
   }
 
   async delete(id: number) {
@@ -84,6 +135,6 @@ export class CommentService {
 
     await this.commentRepository.softDelete(id);
 
-    return { message: 'success' };
+    return { message: 'Xóa bình luận thành công' };
   }
 }
