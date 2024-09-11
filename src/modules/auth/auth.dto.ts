@@ -12,7 +12,7 @@ export class CreateAuthDto {
 }
 
 export class LoginAuthDto {
-  @IsEmail()
+  @IsEmail({},{message:'Email không đúng định dạng'})
   email: string;
 
   @IsString()

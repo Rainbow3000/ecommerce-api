@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { ORDER_NOT_FOUND } from 'src/common/error';
 import { CreateOrderDto, GetListOrderDto, UpdateOrderDto } from './Order.dto';
@@ -45,12 +45,14 @@ export class OrderService {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
 
-    return await this.orderRepository.find({
+    const data =  await this.orderRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
         user: true,
-        orderDetails: true,
+        orderDetails: {
+          product: true
+        },
       },
       select: {
         user: {
@@ -61,6 +63,10 @@ export class OrderService {
         userId
       }
     });
+
+    return {
+      data
+    } as TResult
   }
 
   async single(id: number) {

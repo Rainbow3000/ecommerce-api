@@ -23,17 +23,18 @@ export class OrderController {
   list(@Query() query: GetListOrderDto) {
     return this.orderService.list(query);
   }
+  
+  @Get('/by-user')
+  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
+  listByUser(@Query() query: GetListOrderDto, @Req() req) {
+    return this.orderService.listByUser(query, req.user);
+  }
 
   @Get(':id')
   single(@Param('id') id: number) {
     return this.orderService.single(id);
   }
 
-  @Get('by-user')
-  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
-  listByUser(@Query() query: GetListOrderDto, @Req() req) {
-    return this.orderService.listByUser(query, req.user);
-  }
 
   @Post()
   @Roles(ROLE.USER, ROLE.SUPER_ADMIN)

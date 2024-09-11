@@ -45,11 +45,13 @@ export class CommentService {
       select: {
         user: {
           userName: true,
+          email: true
         },
         id: true,
         content: true,
         image: true,
-        productId: true
+        productId: true,
+        createdAt: true
       },
     });
 

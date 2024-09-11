@@ -63,6 +63,7 @@ export class AuthService {
   }
 
   async login(payload: LoginAuthDto) {
+    console.log(payload)
     const user = await this.userRepository.findOne({
       where: {
         email: payload.email,
@@ -94,7 +95,7 @@ export class AuthService {
     const isMatch = await bcrypt.compare(payload.password, user.password);
 
     if (!isMatch) {
-      throw new UnauthorizedException(PASSWORD_INCORRECT);
+      throw new BadRequestException(PASSWORD_INCORRECT);
     }
 
     const subject = {
@@ -102,6 +103,8 @@ export class AuthService {
       username: user.userName,
       roleName: user.userRoles.map((role) => role.role.roleName),
     };
+
+    console.log(subject)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...restData } = user;
