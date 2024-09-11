@@ -12,6 +12,7 @@ async function bootstrap() {
     origin: '*',
   });
   await app.listen(5000);
+  const a = 10;
 
   const dataSource = await app.get(DataSource);
 
