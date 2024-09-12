@@ -1,4 +1,4 @@
-import { isNumber, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ORDER_STATUS } from 'src/common/enums';
 
 export class CreateOrderDto {

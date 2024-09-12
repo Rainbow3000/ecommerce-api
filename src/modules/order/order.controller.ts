@@ -43,8 +43,9 @@ export class OrderController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() payload: UpdateOrderDto) {
-    return this.orderService.update(id, payload);
+  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
+  update(@Param('id') id: number, @Body() payload: UpdateOrderDto , @Req() req) {
+    return this.orderService.update(id, payload, req.user);
   }
 
   @Delete(':id')
