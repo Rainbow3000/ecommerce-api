@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { USER_NOT_FOUND } from 'src/common/error';
 import { UserEntity } from 'src/entities/user.entity';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
-import { DataSource, FindOptionsWhere, Like, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Like, Not, Repository } from 'typeorm';
 import { GetUserListDto, UpdateUserInfo } from './user.dto';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { UserInfoEntity } from 'src/entities/user_info.entity';
@@ -77,6 +77,8 @@ export class UserService {
       where.email = Like(`%${payload.q}%`);
     }
 
+    where.email = Not('super_admin@gmail.com')
+
     const data = await this.userRepository.find({
       skip: (page - 1) * limit,
       take: limit,
@@ -90,6 +92,7 @@ export class UserService {
         id: true,
         email: true,
         userName: true,
+        status: true,
         userRoles: {
           roleId: true,
           role: {
