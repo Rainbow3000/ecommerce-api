@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
 import { ORDER_NOT_FOUND, USER_NOT_FOUND } from 'src/common/error';
 import { CreateOrderDto, GetListOrderDto, UpdateOrderDto } from './Order.dto';
@@ -13,8 +13,8 @@ import { OrderDetailsEntity } from 'src/entities/order_details.entity';
 import { MailService } from '../mail/mail.service';
 import { TResult } from 'src/common/types';
 import { ORDER_STATUS, ROLE } from 'src/common/enums';
-import { UserEntity } from 'src/entities/user.entity';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Injectable()
 export class OrderService {
@@ -23,11 +23,17 @@ export class OrderService {
     private readonly orderRepository: Repository<OrderEntity>,
     private readonly dataSource: DataSource,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async list(payload: GetListOrderDto) {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
+
+    const where: FindOptionsWhere<OrderEntity> = {}
+
+    if (payload.orderStatus) {
+      where.orderStatus = payload.orderStatus
+    }
 
     const data = await this.orderRepository.find({
       skip: (page - 1) * limit,
@@ -44,6 +50,7 @@ export class OrderService {
           email: true,
         },
       },
+      where
     });
 
     return {
@@ -110,9 +117,11 @@ export class OrderService {
 
     const token = Math.floor(1000 + Math.random() * 9000).toString();
 
+    const user = await this.dataSource.getRepository(UserEntity).findOneBy({ id: userId })
+
     try {
       await this.mailService.sendUserWelcome(
-        'nguyenducthinh0401@gmail.com',
+        user.email,
         token,
       );
     } catch (error) {

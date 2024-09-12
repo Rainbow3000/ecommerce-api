@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ORDER_STATUS } from 'src/common/enums';
 
 export class CreateOrderDto {
@@ -27,4 +27,8 @@ export class GetListOrderDto {
   @IsString()
   @IsOptional()
   q?: string;
+
+  @IsEnum(ORDER_STATUS)
+  @IsOptional()
+  orderStatus: ORDER_STATUS;
 }

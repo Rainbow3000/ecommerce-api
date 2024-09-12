@@ -9,6 +9,6 @@ export class UserInfoEntity extends BaseEntity {
   @Column({ type: 'varchar', nullable: false, unique: true })
   phoneNumber: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   avatar: string;
 }
