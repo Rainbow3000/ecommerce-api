@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { BASE_API_URL } from 'src/common/constants';
 import { GetUserListDto, UpdateUserInfo } from './user.dto';
+import { Roles } from 'src/metadata/auth.metadata';
+import { ROLE } from 'src/common/enums';
 
 @Controller(`${BASE_API_URL}/user`)
 export class UserController {
@@ -18,7 +20,8 @@ export class UserController {
   }
 
   @Put()
-  updateInfo(@Param('id') id: number, @Body() payload: UpdateUserInfo) {
-    return this.userService.updateInfo(payload, id)
+  @Roles(ROLE.USER, ROLE.SUPER_ADMIN)
+  updateInfo(@Body() payload: UpdateUserInfo, @Req() req) {
+    return this.userService.updateInfo(payload, req.user)
   }
 }

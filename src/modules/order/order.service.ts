@@ -6,12 +6,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/common/constants';
-import { ORDER_NOT_FOUND } from 'src/common/error';
+import { ORDER_NOT_FOUND, USER_NOT_FOUND } from 'src/common/error';
 import { CreateOrderDto, GetListOrderDto, UpdateOrderDto } from './Order.dto';
 import { OrderEntity } from 'src/entities/order.entity';
 import { OrderDetailsEntity } from 'src/entities/order_details.entity';
 import { MailService } from '../mail/mail.service';
 import { TResult } from 'src/common/types';
+import { ORDER_STATUS, ROLE } from 'src/common/enums';
+import { UserEntity } from 'src/entities/user.entity';
+import { UserRoleEntity } from 'src/entities/user_role.entity';
 
 @Injectable()
 export class OrderService {
@@ -26,53 +29,69 @@ export class OrderService {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
 
-    return await this.orderRepository.find({
+    const data = await this.orderRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
-        user: true,
+        user: {
+          userInfo: true,
+        },
         orderDetails: true,
       },
       select: {
         user: {
+          userName: true,
           email: true,
         },
       },
     });
+
+    return {
+      data,
+    } as TResult;
   }
 
   async listByUser(payload: GetListOrderDto, userId: number) {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
 
-    const data =  await this.orderRepository.find({
+    const data = await this.orderRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
         user: true,
         orderDetails: {
-          product: true
+          product: true,
         },
       },
       select: {
         user: {
+          id: true,
           email: true,
         },
       },
-      where:{
-        userId
-      }
+      where: {
+        userId,
+      },
     });
 
     return {
-      data
-    } as TResult
+      data,
+    } as TResult;
   }
 
   async single(id: number) {
     const order = await this.orderRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        user: {
+          userInfo: true,
+        },
+        orderDetails: {
+          product: true,
+        },
       },
       select: {
         user: {
@@ -83,7 +102,7 @@ export class OrderService {
 
     if (!order) throw new NotFoundException(ORDER_NOT_FOUND);
 
-    return order;
+    return { data: order } as TResult;
   }
 
   async create(payload: CreateOrderDto, userId: number) {
@@ -107,10 +126,33 @@ export class OrderService {
     } as TResult;
   }
 
-  async update(id: number, { orderStatus }: UpdateOrderDto) {
-    const Order = await this.orderRepository.findOneBy({ id });
+  async update(id: number, { orderStatus }: UpdateOrderDto, userId: number) {
+    const order = await this.orderRepository.findOneBy({ id });
 
-    if (!Order) throw new BadRequestException(ORDER_NOT_FOUND);
+    if (!order) throw new BadRequestException(ORDER_NOT_FOUND);
+
+    const user = await this.dataSource.getRepository(UserRoleEntity).findOne({
+      where: {
+        userId,
+      },
+      relations: {
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(USER_NOT_FOUND);
+    }
+
+    if (
+      user.role.roleName !== ROLE.SUPER_ADMIN &&
+      orderStatus === ORDER_STATUS.CANCEL &&
+      order.orderStatus !== ORDER_STATUS.PENDING
+    ) {
+      throw new BadRequestException(
+        'Đơn hàng đã được duyệt, không thể hủy đơn hàng',
+      );
+    }
 
     await this.orderRepository.update(id, { orderStatus });
 

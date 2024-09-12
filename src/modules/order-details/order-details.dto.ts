@@ -9,6 +9,12 @@ export class CreateOrderDetailsDto {
 
   @IsNumber()
   quantity: number;
+  
+  @IsString()
+  color: string
+
+  @IsString()
+  size: string
 }
 
 export class UpdateOrderDetailsDto {

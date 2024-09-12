@@ -80,6 +80,23 @@ export class UserService {
     const data = await this.userRepository.find({
       skip: (page - 1) * limit,
       take: limit,
+      relations: {
+        userRoles: {
+          role: true,
+        },
+        userInfo: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        userName: true,
+        userRoles: {
+          roleId: true,
+          role: {
+            roleName: true,
+          },
+        },
+      },
       where,
     });
 
@@ -126,7 +143,13 @@ export class UserService {
     if (!user) throw new NotFoundException(USER_NOT_FOUND);
 
     if (!user.userInfo) {
-      await this.dataSource.getRepository(UserInfoEntity).insert(payload);
+      const userInfo = await this.dataSource
+        .getRepository(UserInfoEntity)
+        .save(payload);
+
+      await this.dataSource
+        .getRepository(UserEntity)
+        .update({ id: userId }, { userInfo });
     } else {
       await this.dataSource
         .getRepository(UserInfoEntity)
