@@ -1,10 +1,13 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ORDER_STATUS } from 'src/common/enums';
+import { ORDER_STATUS, PAYMENT_TYPE } from 'src/common/enums';
 
 export class CreateOrderDto {
   @IsString()
   totalMoney: string;
 
+  @IsEnum(PAYMENT_TYPE)
+  paymentType: PAYMENT_TYPE;
+  
   @IsString()
   @IsOptional()
   userNote: string;

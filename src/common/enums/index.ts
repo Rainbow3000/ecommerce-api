@@ -15,3 +15,8 @@ export enum ORDER_STATUS {
   SUCCESS = 'success',
   CANCEL = 'cancel',
 }
+
+export enum PAYMENT_TYPE {
+  NORMAL = 'normal',
+  ONLINE = 'paypal',
+}

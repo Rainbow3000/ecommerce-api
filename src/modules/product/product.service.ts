@@ -25,6 +25,7 @@ import {
 } from './product.dto';
 import { CategoryEntity } from 'src/entities/category.entity';
 import { TResult } from 'src/common/types';
+import { OrderDetailsEntity } from 'src/entities/order_details.entity';
 
 @Injectable()
 export class ProductService {
@@ -141,5 +142,48 @@ export class ProductService {
       statusCode: 200,
       message: 'Xóa sản phẩm thành công',
     } as TResult;
+  }
+
+  async getProductSellTheMost() {
+    const orderDetails = await this.dataSource
+      .getRepository(OrderDetailsEntity)
+      .find({
+        relations: {
+          product: true,
+        },
+      });
+
+    const results = {};
+
+    if (orderDetails.length) {
+      orderDetails.forEach((item) => {
+        if (results[item.product.id]) {
+          results[item.product.id] = results[item.product.id] + 1;
+        } else {
+          results[item.product.id] = 1;
+        }
+      });
+
+      const id = Object.entries(results).reduce((max, current) =>
+        current[1] > max[1] ? current : max,
+      )[0];
+
+      const product = await this.productRepository.findOneBy({
+        id: parseInt(id),
+      });
+
+      return {
+        data: product,
+      } as TResult;
+    }
+
+    const product = await this.productRepository.find({
+      order: {
+        sold: 'DESC',
+      },
+      take: 1,
+    });
+
+    return { data: product} as TResult;
   }
 }
