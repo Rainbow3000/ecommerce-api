@@ -25,10 +25,16 @@ export class ProductController {
     return this.productService.list(query);
   }
 
+  @Get('/sell-the-most')
+  getProductSellTheMost() {
+    return this.productService.getProductSellTheMost();
+  }
+  
   @Get(':id')
   single(@Param('id') id: number) {
     return this.productService.single(id);
   }
+
 
   @Post()
   create(@Body() payload: CreateProductDto) {
@@ -38,7 +44,7 @@ export class ProductController {
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: UpdateProductDto) {
     return this.productService.update(id, payload);
-  }
+}
 
   @Delete(':id')
   delete(@Param('id') id: number) {

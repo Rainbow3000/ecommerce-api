@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from 'src/common/enums';
+import { ORDER_STATUS, PAYMENT_TYPE } from 'src/common/enums';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { UserEntity } from './user.entity';
@@ -14,6 +14,13 @@ export class OrderEntity extends BaseEntity {
 
   @Column({ type: 'varchar', name: 'user_note' })
   userNote: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'payment_type',
+    default: PAYMENT_TYPE.NORMAL,
+  })
+  paymentType: string;
 
   @Column({ type: 'varchar', nullable: false, default: ORDER_STATUS.PENDING })
   orderStatus: ORDER_STATUS;

@@ -29,7 +29,7 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'text', name: 'new_price', nullable: false })
   newPrice: string;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'int', default: 10 })
   sold: number;
 
   @Column({ type: 'int', default: 0 })
