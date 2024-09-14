@@ -15,6 +15,7 @@ import { TResult } from 'src/common/types';
 import { ORDER_STATUS, ROLE } from 'src/common/enums';
 import { UserRoleEntity } from 'src/entities/user_role.entity';
 import { UserEntity } from 'src/entities/user.entity';
+import { ProductEntity } from 'src/entities/product.entity';
 
 @Injectable()
 export class OrderService {
@@ -164,6 +165,15 @@ export class OrderService {
     }
 
     await this.orderRepository.update(id, { orderStatus });
+
+    if (order.orderDetails.length) {
+      await Promise.all(order.orderDetails.map(async item => {
+        const product = await this.dataSource.getRepository(ProductEntity).findOneBy({ id: item.product.id })
+        if (product) {
+          await this.dataSource.getRepository(ProductEntity).update({ id: product.id }, { sold: product.sold + item.quantity })
+        }
+      }))
+    }
 
     return {
       statusCode: 200,
