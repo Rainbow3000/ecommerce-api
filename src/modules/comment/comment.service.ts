@@ -23,7 +23,7 @@ export class CommentService {
     @InjectRepository(CommentEntity)
     private readonly commentRepository: Repository<CommentEntity>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async list(payload: GetListCommentDto) {
     const limit = payload.limit || DEFAULT_LIMIT;
@@ -35,7 +35,7 @@ export class CommentService {
       where.productId = payload.productId;
     }
 
-    const data =  await this.commentRepository.find({
+    const data = await this.commentRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {
@@ -53,6 +53,9 @@ export class CommentService {
         productId: true,
         createdAt: true
       },
+      order: {
+        id: 'DESC'
+      }
     });
 
     return { data } as TResult
@@ -69,7 +72,7 @@ export class CommentService {
       where.productId = payload.productId;
     }
 
-    const data =  await this.commentRepository.find({
+    const data = await this.commentRepository.find({
       skip: (page - 1) * limit,
       take: limit,
       relations: {

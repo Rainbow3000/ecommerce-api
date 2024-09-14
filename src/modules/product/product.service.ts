@@ -33,12 +33,12 @@ export class ProductService {
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async list(payload: GetListProductDto) {
     const limit = payload.limit || DEFAULT_LIMIT;
     const page = payload.page || DEFAULT_PAGE;
-    const order: { newPrice?: FindOptionsOrderValue } = {};
+    const order: { newPrice?: FindOptionsOrderValue, id?: FindOptionsOrderValue } = {};
     const where: FindOptionsWhere<ProductEntity> = {};
 
     if (payload.q) {
@@ -59,6 +59,8 @@ export class ProductService {
 
     if (payload.price) {
       order.newPrice = payload.price as FindOptionsOrderValue;
+    } else {
+      order.id = 'DESC'
     }
 
     const data = await this.productRepository.find({
@@ -145,45 +147,19 @@ export class ProductService {
   }
 
   async getProductSellTheMost() {
-    const orderDetails = await this.dataSource
-      .getRepository(OrderDetailsEntity)
-      .find({
-        relations: {
-          product: true,
+    try {
+      const product = await this.productRepository.find({
+        order: {
+          sold: 'DESC',
         },
+        take: 1,
       });
 
-    const results = {};
+      return { data: product[0] } as TResult;
 
-    if (orderDetails.length) {
-      orderDetails.forEach((item) => {
-        if (results[item.product.id]) {
-          results[item.product.id] = results[item.product.id] + 1;
-        } else {
-          results[item.product.id] = 1;
-        }
-      });
+    } catch (error) {
+      console.log(error);
 
-      const id = Object.entries(results).reduce((max, current) =>
-        current[1] > max[1] ? current : max,
-      )[0];
-
-      const product = await this.productRepository.findOneBy({
-        id: parseInt(id),
-      });
-
-      return {
-        data: product,
-      } as TResult;
     }
-
-    const product = await this.productRepository.find({
-      order: {
-        sold: 'DESC',
-      },
-      take: 1,
-    });
-
-    return { data: product} as TResult;
   }
 }

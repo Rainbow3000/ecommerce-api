@@ -38,6 +38,9 @@ export class CategoryService {
       relations: {
         products: true,
       },
+      order:{
+        id:'DESC'
+      }
     });
 
     return {

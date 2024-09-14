@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAuthDto, LoginAuthDto } from './auth.dto';
 import { DataSource, Repository } from 'typeorm';
@@ -31,6 +30,8 @@ export class AuthService {
 
   async register(payload: CreateAuthDto) {
     try {
+      
+      // Mã hoá mật khẩu
       const hashPassword = await bcrypt.hash(payload.password, 10);
 
       payload.password = hashPassword;
@@ -91,6 +92,7 @@ export class AuthService {
       throw new NotFoundException(USER_NOT_FOUND);
     }
 
+    // Giải mã mật khẩu
     const isMatch = await bcrypt.compare(payload.password, user.password);
 
     if (!isMatch) {

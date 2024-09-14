@@ -16,7 +16,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private dataSource: DataSource,
-  ) {}
+  ) { }
 
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
@@ -101,6 +101,9 @@ export class UserService {
         },
       },
       where,
+      order: {
+        id: 'DESC'
+      }
     });
 
     return {
@@ -110,7 +113,7 @@ export class UserService {
     } as TResult;
   }
 
-  async deleteUser(id) {
+  async deleteUser(id: number) {
     const user = await this.userRepository.findOne({
       where: {
         id,
@@ -130,7 +133,7 @@ export class UserService {
         .getRepository(userInfo)
         .softRemove({ id: user.userInfo.id });
 
-    return { message: 'success' };
+    return { message: 'Xoá người dùng thành công' } as TResult;
   }
 
   async updateInfo(payload: UpdateUserInfo, userId: number) {

@@ -4,7 +4,7 @@ export class CreateAuthDto {
   @IsString()
   userName: string;
 
-  @IsEmail({},{message:'Email không đúng định dạng'})
+  @IsString()
   email: string;
 
   @IsString()

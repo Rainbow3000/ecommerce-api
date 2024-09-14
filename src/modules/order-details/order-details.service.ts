@@ -35,6 +35,9 @@ export class OrderDetailsService {
         product: true,
         order: true,
       },
+      order:{
+        id:'DESC'
+      }
     });
   }
 

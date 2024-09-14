@@ -51,7 +51,10 @@ export class OrderService {
           email: true,
         },
       },
-      where
+      where,
+      order:{
+        id:'DESC'
+      }
     });
 
     return {
@@ -81,6 +84,9 @@ export class OrderService {
       where: {
         userId,
       },
+      order:{
+        id:'DESC'
+      }
     });
 
     return {
@@ -166,7 +172,7 @@ export class OrderService {
 
     await this.orderRepository.update(id, { orderStatus });
 
-    if (order.orderDetails.length) {
+    if (order.orderDetails?.length) {
       await Promise.all(order.orderDetails.map(async item => {
         const product = await this.dataSource.getRepository(ProductEntity).findOneBy({ id: item.product.id })
         if (product) {
