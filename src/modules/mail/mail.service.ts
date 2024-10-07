@@ -20,4 +20,21 @@ export class MailService {
       },
     });
   }
+
+  async resetPassword(email: string, token: string, newPass: string) {
+    const confirmation_url = `example.com/auth/confirm?token=${token}`;
+
+    await this.mailerService.sendMail({
+      to: email,
+      // from: '"Support Team" <support@example.com>', // override default from
+      subject: 'Khôi phục mật khẩu',
+      template: './forgetpass', // `.ejs` extension is appended automatically
+      context: {
+        // filling <%= %> brackets with content
+        name: email,
+        confirmation_url,
+        newPass
+      },
+    });
+  }
 }

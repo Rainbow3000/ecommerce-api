@@ -4,7 +4,7 @@ import { ChartsService } from './charts.service';
 
 @Controller(`${BASE_API_URL}/charts`)
 export class ChartsController {
-  constructor(private chartsService: ChartsService) {}
+  constructor(private readonly chartsService: ChartsService) {}
 
   @Get('chart-compose-product')
   getChartComposeProduct() {

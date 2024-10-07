@@ -3,11 +3,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAuthDto, LoginAuthDto } from './auth.dto';
+import { CreateAuthDto, ForgetPassDto, LoginAuthDto } from './auth.dto';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  EMAIL_NOT_FOUND,
   PASSWORD_INCORRECT,
   USER_EXISTED,
   USER_NOT_FOUND,
@@ -18,6 +19,7 @@ import { RoleEntity } from 'src/entities/role.entity';
 import { ROLE } from 'src/common/enums';
 import { JwtService } from '@nestjs/jwt';
 import { TResult } from 'src/common/types';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -26,12 +28,11 @@ export class AuthService {
     private userRepository: Repository<UserEntity>,
     private dataSource: DataSource,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   async register(payload: CreateAuthDto) {
     try {
-      
-      // Mã hoá mật khẩu
       const hashPassword = await bcrypt.hash(payload.password, 10);
 
       payload.password = hashPassword;
@@ -92,7 +93,6 @@ export class AuthService {
       throw new NotFoundException(USER_NOT_FOUND);
     }
 
-    // Giải mã mật khẩu
     const isMatch = await bcrypt.compare(payload.password, user.password);
 
     if (!isMatch) {
@@ -116,5 +116,44 @@ export class AuthService {
       message: 'Đăng nhập thành công',
       statusCode: 200,
     } as TResult;
+  }
+
+  async forgetPass(payload: ForgetPassDto) {
+    const user = await this.userRepository.findOneBy({ email: payload.email });
+
+    if (!user) throw new NotFoundException(EMAIL_NOT_FOUND);
+
+    const newPassword = this.generateRandomPassword(8);
+
+    await this.userRepository.update(
+      { id: user.id },
+      { password: await bcrypt.hash(newPassword, 10) },
+    );
+
+    const token = Math.floor(1000 + Math.random() * 9000).toString();
+
+    await this.mailService.resetPassword(user.email, token, newPassword);
+
+    return {
+      statusCode: 200,
+      message: 'Khôi phục mật khẩu thành công !',
+    } as TResult;
+  }
+
+  generateRandomPassword(length: any) {
+    const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+    const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const specialChars = '!@#$%^&*()_+[]{}|;:,.<>?';
+
+    const allChars = lowerCase + upperCase + numbers + specialChars;
+    let password = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * allChars.length);
+      password += allChars[randomIndex];
+    }
+
+    return password;
   }
 }

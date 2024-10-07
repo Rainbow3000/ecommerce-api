@@ -4,6 +4,12 @@ export const USER_NOT_FOUND = {
   message: 'Tài khoản không tồn tại',
 };
 
+export const EMAIL_NOT_FOUND = {
+  error: 'Not Found',
+  statusCode: 404,
+  message: 'Email không tồn tại',
+};
+
 export const USER_EXISTED = {
   error: 'Duplicate',
   statusCode: 400,

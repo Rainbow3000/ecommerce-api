@@ -12,9 +12,14 @@ export class CreateAuthDto {
 }
 
 export class LoginAuthDto {
-  @IsEmail({},{message:'Email không đúng định dạng'})
+  @IsEmail({}, { message: 'Email không đúng định dạng' })
   email: string;
 
   @IsString()
   password: string;
+}
+
+export class ForgetPassDto {
+  @IsString()
+  email: string;
 }
